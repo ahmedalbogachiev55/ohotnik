@@ -1,0 +1,968 @@
+<!--
+  ВАЖНО — как открыть сайт через GitHub (пошагово):
+  1. Этот файл ОБЯЗАТЕЛЬНО должен называться  index.html  (латиницей, без пробелов и русских букв).
+     Если он называется "сайт.html", "ohotnik.html" и т.п. — переименуйте в index.html.
+  2. Залейте index.html в корень репозитория GitHub (Add file → Upload files).
+  3. В репозитории: Settings → Pages → Build and deployment → Source: "Deploy from a branch"
+     → Branch: main, папка / (root) → Save.
+  4. Подождите 1–2 минуты и откройте адрес вида:
+     https://ВАШ-НИК.github.io/ИМЯ-РЕПОЗИТОРИЯ/
+  5. Если открывать просто страницу файла на github.com (или через Raw) — сайт НЕ отрисуется,
+     GitHub показывает исходный код. Нужен именно адрес из пункта 4 (GitHub Pages).
+-->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Охотник и Рыболов — оружейный магазин | Гладкоствольное, нарезное, ОООП, патроны</title>
+<meta name="description" content="Магазин «Охотник и Рыболов» (г. Назрань): гладкоствольное и нарезное оружие, травматические пистолеты (ОООП), патроны всех калибров, оптика и товары для рыбалки. Продажа по лицензии согласно ФЗ №150 «Об оружии».">
+
+<!-- ==================== ШРИФТЫ ==================== -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/oswald@latest/cyrillic-500-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/oswald@latest/cyrillic-600-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/manrope@latest/cyrillic-400-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/manrope@latest/cyrillic-600-normal.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/manrope@latest/cyrillic-800-normal.css">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+/* ==================== НАСТРОЙКИ ТЕМЫ (Tailwind) ==================== */
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        pine: {950:'#0b130e',900:'#0f1a14',800:'#15241b',700:'#1c3125',600:'#274232',500:'#35573f'},
+        amberx: {DEFAULT:'#e0862e',dark:'#b96a17',light:'#f2a95c'},
+        cream:'#f4f0e6',
+        moss:'#9dbb9a'
+      },
+      fontFamily: {
+        display:['Oswald','ui-sans-serif','sans-serif'],
+        body:['Manrope','ui-sans-serif','sans-serif']
+      },
+      boxShadow: {
+        card:'0 14px 34px -14px rgba(0,0,0,.6)',
+        glow:'0 0 0 1px rgba(224,134,46,.35), 0 12px 40px -12px rgba(224,134,46,.35)'
+      }
+    }
+  }
+}
+</script>
+
+<!-- ====================================================================
+     СТИЛИСТИКА — отдельный блок CSS
+==================================================================== -->
+<style>
+  html{scroll-behavior:smooth}
+  body{-webkit-font-smoothing:antialiased}
+  ::selection{background:#e0862e;color:#0f1a14}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:#0f1a14}
+  ::-webkit-scrollbar-thumb{background:#274232;border-radius:8px}
+  ::-webkit-scrollbar-thumb:hover{background:#35573f}
+
+  .imgwell{background:radial-gradient(circle at 30% 20%, #ffffff 0%, #f1ede3 55%, #e6e1d4 100%)}
+  .hero-veil{background:linear-gradient(100deg, rgba(11,19,14,.96) 0%, rgba(11,19,14,.82) 38%, rgba(11,19,14,.35) 70%, rgba(11,19,14,.55) 100%)}
+  .grain::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.06;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  .chip{transition:all .25s ease}
+  .chip:hover{transform:translateY(-2px)}
+  .chip.active{background:#e0862e;color:#0f1a14;border-color:#e0862e}
+  .chip.active .chip-name{color:#0f1a14}
+
+  .pcard{transition:transform .35s cubic-bezier(.2,.7,.2,1),border-color .3s,box-shadow .35s}
+  .pcard:hover{transform:translateY(-6px);border-color:rgba(224,134,46,.45);box-shadow:0 22px 44px -18px rgba(0,0,0,.7)}
+  .pcard:hover .pimg{transform:scale(1.06)}
+  .pimg{transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+  .pcard.is-out .imgwell{filter:grayscale(.55) brightness(.92)}
+  .pcard.is-out:hover{border-color:rgba(255,255,255,.12)}
+
+  .catcard .catimg{transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+  .catcard:hover .catimg{transform:scale(1.08)}
+
+  /* --- статусы наличия --- */
+  .stock{display:inline-flex;align-items:center;gap:.4rem;font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+  .stock::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0}
+  .stock-in{color:#7ddc7d}
+  .stock-in::before{animation:pulseDotG 2s infinite}
+  @keyframes pulseDotG{0%,100%{box-shadow:0 0 0 0 rgba(125,220,125,.5)}50%{box-shadow:0 0 0 5px rgba(125,220,125,0)}}
+  .stock-few{color:#f2c14e}
+  .stock-out{color:#e5695e}
+
+  .btn-notify{background:transparent;border:1px dashed #e5695e;color:#e5695e;font-weight:800;transition:all .2s}
+  .btn-notify:hover{background:rgba(229,105,94,.12)}
+
+  #drawer{transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+  #drawerOverlay{transition:opacity .35s ease}
+
+  .toast{animation:toastIn .35s cubic-bezier(.2,.8,.2,1)}
+  @keyframes toastIn{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
+
+  .marq{overflow:hidden;white-space:nowrap}
+  .marq > div{display:inline-block;animation:marq 34s linear infinite}
+  @keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .pulse-dot{animation:pulseDot 2s infinite}
+  @keyframes pulseDot{0%,100%{box-shadow:0 0 0 0 rgba(224,134,46,.5)}50%{box-shadow:0 0 0 8px rgba(224,134,46,0)}}
+
+  input,select,textarea{color-scheme:dark}
+  .field{background:#12211a;border:1px solid rgba(255,255,255,.1);border-radius:.75rem;padding:.7rem 1rem;width:100%;color:#f4f0e6;outline:none;transition:border-color .2s, box-shadow .2s}
+  .field:focus{border-color:#e0862e;box-shadow:0 0 0 3px rgba(224,134,46,.18)}
+  .field::placeholder{color:#7d8a7f}
+
+  .btn-amber{background:linear-gradient(180deg,#f2a95c,#e0862e);color:#160d03;font-weight:800;transition:filter .2s, transform .15s}
+  .btn-amber:hover{filter:brightness(1.07)}
+  .btn-amber:active{transform:scale(.97)}
+  .btn-ghost{border:1px solid rgba(255,255,255,.16);transition:all .2s}
+  .btn-ghost:hover{border-color:#e0862e;color:#f2a95c}
+
+  .stepnum{font-family:Oswald,sans-serif;font-size:3.4rem;line-height:1;color:transparent;-webkit-text-stroke:1px rgba(224,134,46,.55)}
+</style>
+</head>
+<body class="bg-pine-900 text-cream font-body">
+
+<!-- ==================== ПОДТВЕРЖДЕНИЕ ВОЗРАСТА ==================== -->
+<div id="ageGate" class="fixed inset-0 z-[100] bg-pine-950/[.985] backdrop-blur-md flex items-center justify-center p-4">
+  <div class="max-w-lg w-full bg-pine-800 border border-white/10 rounded-3xl p-8 md:p-10 text-center shadow-card relative overflow-hidden grain">
+    <div class="absolute -top-16 -right-16 w-56 h-56 rounded-full bg-amberx/10 blur-2xl"></div>
+    <div class="mx-auto w-20 h-20 rounded-2xl bg-amberx text-pine-950 font-display text-3xl font-semibold flex items-center justify-center mb-6 rotate-3">18+</div>
+    <h2 class="font-display text-3xl md:text-4xl font-semibold uppercase tracking-wide mb-3">Подтверждение возраста</h2>
+    <p class="text-moss text-sm md:text-base leading-relaxed mb-7">Сайт магазина «Охотник и Рыболов» содержит информацию о гражданском оружии и патронах.
+      В соответствии с законодательством РФ она доступна только лицам, достигшим <b class="text-cream">18 лет</b>. Подтвердите свой возраст.</p>
+    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+      <button id="ageYes" class="btn-amber rounded-xl px-7 py-3.5 font-display uppercase tracking-wider text-sm">Мне есть 18 лет — войти</button>
+      <button id="ageNo" class="btn-ghost rounded-xl px-7 py-3.5 font-display uppercase tracking-wider text-sm text-moss">Мне нет 18 лет</button>
+    </div>
+    <p class="mt-6 text-[11px] text-moss/70 leading-relaxed">Продажа гражданского оружия и патронов осуществляется только по лицензии Росгвардии (ФЗ № 150-ФЗ «Об оружии»).</p>
+  </div>
+</div>
+<div id="ageDeny" class="hidden fixed inset-0 z-[101] bg-pine-950 flex items-center justify-center p-6 text-center">
+  <div class="max-w-md">
+    <div class="text-6xl mb-4">🛡️</div>
+    <h2 class="font-display text-2xl uppercase mb-3 text-amberx-light">Доступ ограничен</h2>
+    <p class="text-moss text-sm leading-relaxed">Информация об оружии и патронах доступна только с 18 лет. Возвращайтесь, когда достигнете совершеннолетия.</p>
+  </div>
+</div>
+
+<!-- ==================== ВЕРХНЯЯ СТРОКА ==================== -->
+<div class="bg-pine-950 text-[12px] md:text-[13px] text-moss border-b border-white/5">
+  <div class="marq py-2">
+    <div>
+      <span class="mx-6">⚖️ Продажа оружия и патронов — только по лицензии Росгвардии (ФЗ № 150-ФЗ «Об оружии»)</span>
+      <span class="mx-6 text-amberx-light">21+</span>
+      <span class="mx-6">🚫 Дистанционная продажа оружия в РФ запрещена — на сайте доступно бронирование и самовывоз из магазина</span>
+      <span class="mx-6">🔐 Нарезное оружие — при стаже владения гладкоствольным не менее 5 лет</span>
+      <span class="mx-6">📦 Наличие обновляется ежедневно: «В наличии», «Мало», «Нет в наличии»</span>
+      <span class="mx-6">📍 г. Назрань, ул. Чеченская, 32/1 · ежедневно 9:00–18:00</span>
+      <span class="mx-6">☎️ +7 (960) 660-06-24</span>
+      <span class="mx-6">⚖️ Продажа оружия и патронов — только по лицензии Росгвардии (ФЗ № 150-ФЗ «Об оружии»)</span>
+      <span class="mx-6 text-amberx-light">21+</span>
+      <span class="mx-6">🚫 Дистанционная продажа оружия в РФ запрещена — на сайте доступно бронирование и самовывоз из магазина</span>
+      <span class="mx-6">🔐 Нарезное оружие — при стаже владения гладкоствольным не менее 5 лет</span>
+      <span class="mx-6">📦 Наличие обновляется ежедневно: «В наличии», «Мало», «Нет в наличии»</span>
+      <span class="mx-6">📍 г. Назрань, ул. Чеченская, 32/1 · ежедневно 9:00–18:00</span>
+      <span class="mx-6">☎️ +7 (960) 660-06-24</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ШАПКА ==================== -->
+<header id="hdr" class="sticky top-0 z-40 bg-pine-900/90 backdrop-blur-lg border-b border-white/5 transition-shadow">
+  <div class="max-w-7xl mx-auto px-4 md:px-6 h-[72px] flex items-center gap-4">
+    <a href="#top" class="flex items-center gap-3 shrink-0 group">
+      <span class="relative w-11 h-11 rounded-xl overflow-hidden ring-1 ring-white/15 group-hover:ring-amberx transition">
+        <img src="https://image.qwenlm.ai/public_source/1710ad9e-01fe-4ade-b347-ae90396c4b7b/30d782f15-56bb-47f5-b5a8-b1e7ca262b1d9731.png" alt="Логотип магазина Охотник и Рыболов" class="w-full h-full object-cover">
+      </span>
+      <span class="leading-none">
+        <span class="block font-display font-semibold uppercase text-lg md:text-xl tracking-wide">Охотник <span class="text-amberx">и</span> Рыболов</span>
+        <span class="block text-[11px] text-moss mt-1 tracking-widest uppercase">Оружейный магазин · с 2008 года</span>
+      </span>
+    </a>
+    <nav class="hidden lg:flex items-center gap-7 ml-8 text-sm font-semibold text-moss">
+      <a href="#categories" class="hover:text-amberx-light transition">Категории</a>
+      <a href="#catalog" class="hover:text-amberx-light transition">Каталог</a>
+      <a href="#law" class="hover:text-amberx-light transition">Закон и лицензии</a>
+      <a href="#about" class="hover:text-amberx-light transition">О магазине</a>
+      <a href="#contacts" class="hover:text-amberx-light transition">Контакты</a>
+    </nav>
+    <div class="ml-auto flex items-center gap-3">
+      <a href="tel:+79606600624" class="hidden md:block text-right leading-tight">
+        <span class="block font-display text-base tracking-wide">+7 (960) 660-06-24</span>
+        <span class="block text-[11px] text-moss">ежедневно 9:00–18:00</span>
+      </a>
+      <button id="cartBtn" class="relative flex items-center gap-2.5 btn-amber rounded-xl px-4 py-2.5 text-sm font-display uppercase tracking-wider">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.6"/><circle cx="19" cy="21" r="1.6"/><path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h8.9a2 2 0 0 0 2-1.6L22 7H6"/></svg>
+        <span class="hidden sm:inline">Корзина</span>
+        <span id="cartCount" class="min-w-[22px] h-[22px] px-1 rounded-full bg-pine-950 text-amberx-light text-[12px] font-body font-extrabold flex items-center justify-center">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ==================== ГЛАВНЫЙ ЭКРАН ==================== -->
+<section id="top" class="relative min-h-[600px] md:min-h-[680px] flex items-center overflow-hidden grain">
+  <img id="heroImg" src="" alt="Река на рассвете — охота и рыбалка" class="absolute inset-0 w-full h-full object-cover">
+  <div class="absolute inset-0 hero-veil"></div>
+  <div class="relative max-w-7xl mx-auto px-4 md:px-6 py-20 w-full">
+    <div class="max-w-2xl">
+      <div class="inline-flex items-center gap-2 bg-pine-950/70 border border-amberx/40 rounded-full px-4 py-2 text-[12px] md:text-[13px] text-amberx-light font-semibold mb-6">
+        <span class="w-2 h-2 rounded-full bg-amberx pulse-dot"></span>
+        Лицензированный оружейный магазин · Росгвардия · ФЗ № 150
+      </div>
+      <h1 class="font-display font-semibold uppercase leading-[1.04] text-4xl sm:text-5xl lg:text-[64px] tracking-tight">
+        Оружие для охоты.<br>Снасти для души.<br><span class="text-amberx">Всё — по закону.</span>
+      </h1>
+      <p class="mt-6 text-moss text-base md:text-lg leading-relaxed max-w-xl">
+        Гладкоствольные ружья, нарезные карабины, травматические пистолеты (ОООП) и патроны всех популярных калибров.
+        Бронируйте товары из наличия на сайте — получайте в магазине по лицензии и паспорту.
+      </p>
+      <div class="mt-9 flex flex-wrap gap-4">
+        <a href="#catalog" class="btn-amber rounded-xl px-8 py-4 font-display uppercase tracking-wider text-sm">Смотреть каталог</a>
+        <a href="#law" class="btn-ghost rounded-xl px-8 py-4 font-display uppercase tracking-wider text-sm text-cream bg-pine-950/50">Правила покупки</a>
+      </div>
+      <div class="mt-12 grid grid-cols-3 gap-6 max-w-lg">
+        <div><div class="font-display text-3xl text-amberx-light font-semibold">17</div><div class="text-[12px] text-moss mt-1 uppercase tracking-wider">лет на рынке</div></div>
+        <div><div class="font-display text-3xl text-amberx-light font-semibold">1 200+</div><div class="text-[12px] text-moss mt-1 uppercase tracking-wider">товаров в наличии</div></div>
+        <div><div class="font-display text-3xl text-amberx-light font-semibold">100%</div><div class="text-[12px] text-moss mt-1 uppercase tracking-wider">легальность сделок</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== КАТЕГОРИИ ==================== -->
+<section id="categories" class="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24">
+  <div class="flex items-end justify-between gap-6 mb-10 reveal">
+    <div>
+      <div class="text-amberx text-[12px] font-extrabold uppercase tracking-[.25em] mb-2">Разделы магазина</div>
+      <h2 class="font-display text-3xl md:text-5xl font-semibold uppercase">Категории товаров</h2>
+    </div>
+    <div class="hidden md:block text-moss text-sm max-w-xs text-right">Вместо иконок — реальные фотографии товаров из нашего зала и витрин.</div>
+  </div>
+  <div id="catGrid" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4"></div>
+</section>
+
+<!-- ==================== КАТАЛОГ ==================== -->
+<section id="catalog" class="bg-pine-950/60 border-y border-white/5">
+  <div class="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24">
+    <div class="flex flex-wrap items-end justify-between gap-6 mb-8 reveal">
+      <div>
+        <div class="text-amberx text-[12px] font-extrabold uppercase tracking-[.25em] mb-2">Витрина</div>
+        <h2 class="font-display text-3xl md:text-5xl font-semibold uppercase">Каталог</h2>
+        <div class="flex flex-wrap gap-4 mt-3 text-[12.5px] font-bold">
+          <span class="stock stock-in">В наличии</span>
+          <span class="stock stock-few">Осталось мало</span>
+          <span class="stock stock-out">Нет в наличии</span>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
+        <button id="stockToggle" class="btn-ghost rounded-xl px-4 py-3 text-[13px] font-bold text-moss flex items-center gap-2.5">
+          <span id="stockToggleBox" class="w-[18px] h-[18px] rounded-md border-2 border-moss flex items-center justify-center text-[11px] transition"></span>
+          Только в наличии
+        </button>
+        <div class="relative">
+          <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 text-moss" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+          <input id="searchInput" type="search" placeholder="Поиск: МР-27, 7.62×39, ОСА…" class="field pl-10 w-56 md:w-72 text-sm">
+        </div>
+        <select id="sortSelect" class="field w-48 text-sm font-semibold cursor-pointer">
+          <option value="pop">Сначала популярные</option>
+          <option value="stock">Сначала в наличии</option>
+          <option value="asc">Цена: по возрастанию</option>
+          <option value="desc">Цена: по убыванию</option>
+          <option value="name">По названию</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="chipRow" class="flex flex-wrap gap-2.5 mb-10 reveal"></div>
+
+    <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+    <div id="emptyState" class="hidden text-center py-20">
+      <div class="text-5xl mb-4">🔍</div>
+      <div class="font-display text-xl uppercase mb-2">Ничего не найдено</div>
+      <p class="text-moss text-sm">Попробуйте изменить запрос или сбросить фильтры.</p>
+      <button id="resetFilters" class="btn-ghost mt-6 rounded-xl px-6 py-3 text-sm font-display uppercase tracking-wider">Сбросить фильтры</button>
+    </div>
+
+    <div class="mt-10 flex items-start gap-3 bg-pine-800/70 border border-amberx/25 rounded-2xl p-5 text-[13px] text-moss leading-relaxed reveal">
+      <span class="text-amberx text-lg leading-none mt-0.5">⚖️</span>
+      <p>Оружие и патроны на сайте представлены для ознакомления и <b class="text-cream">бронирования</b>. В соответствии с законодательством РФ дистанционная продажа гражданского оружия запрещена: выдача производится только в магазине при предъявлении <b class="text-cream">паспорта и лицензии (разрешения) Росгвардии</b> соответствующего вида. Статус наличия («В наличии», «Мало», «Нет в наличии») обновляется ежедневно; позиции без наличия можно заказать — мы сообщим о поступлении.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== ЗАКОН И ЛИЦЕНЗИИ ==================== -->
+<section id="law" class="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24">
+  <div class="grid lg:grid-cols-[1.15fr_.85fr] gap-10 items-start">
+    <div>
+      <div class="text-amberx text-[12px] font-extrabold uppercase tracking-[.25em] mb-2 reveal">Правовая памятка</div>
+      <h2 class="font-display text-3xl md:text-5xl font-semibold uppercase mb-4 reveal">Покупка по закону РФ</h2>
+      <p class="text-moss leading-relaxed max-w-2xl mb-10 reveal">Мы работаем строго в рамках Конституции РФ и Федерального закона № 150-ФЗ «Об оружии». Четыре шага до законной покупки:</p>
+      <div class="grid sm:grid-cols-2 gap-5">
+        <div class="bg-pine-800 border border-white/5 rounded-2xl p-6 reveal">
+          <div class="stepnum mb-3">01</div>
+          <h3 class="font-display uppercase text-lg mb-2 text-amberx-light">Обучение</h3>
+          <p class="text-sm text-moss leading-relaxed">Пройдите курс безопасного обращения с оружием и проверку знаний в лицензированном учебном центре.</p>
+        </div>
+        <div class="bg-pine-800 border border-white/5 rounded-2xl p-6 reveal">
+          <div class="stepnum mb-3">02</div>
+          <h3 class="font-display uppercase text-lg mb-2 text-amberx-light">Медкомиссия</h3>
+          <p class="text-sm text-moss leading-relaxed">Получите медицинское заключение форм № 002-О/у и № 003-О/у (включая освидетельствование у нарколога и психиатра).</p>
+        </div>
+        <div class="bg-pine-800 border border-white/5 rounded-2xl p-6 reveal">
+          <div class="stepnum mb-3">03</div>
+          <h3 class="font-display uppercase text-lg mb-2 text-amberx-light">Лицензия Росгвардии</h3>
+          <p class="text-sm text-moss leading-relaxed">Подайте заявление через Госуслуги или ЦЛРР Росгвардии. Лицензия на приобретение выдаётся после проверки условий хранения (сейф).</p>
+        </div>
+        <div class="bg-pine-800 border border-white/5 rounded-2xl p-6 reveal">
+          <div class="stepnum mb-3">04</div>
+          <h3 class="font-display uppercase text-lg mb-2 text-amberx-light">Покупка и регистрация</h3>
+          <p class="text-sm text-moss leading-relaxed">Приходите в магазин с паспортом и лицензией. Зарегистрируйте оружие в Росгвардии в течение 14 дней со дня приобретения.</p>
+        </div>
+      </div>
+    </div>
+
+    <aside class="space-y-4 lg:sticky lg:top-24">
+      <div class="bg-gradient-to-br from-amberx to-amberx-dark text-pine-950 rounded-3xl p-7 reveal">
+        <div class="font-display text-2xl uppercase font-semibold mb-1">Важно знать</div>
+        <div class="text-[13px] font-semibold opacity-80 mb-4">Выдержки из законодательства</div>
+        <ul class="space-y-3 text-[13.5px] font-semibold leading-relaxed">
+          <li class="flex gap-2.5"><span>§</span>ФЗ № 150-ФЗ от 13.12.1996 «Об оружии» — основа оборота гражданского оружия.</li>
+          <li class="flex gap-2.5"><span>§</span>Постановление Правительства РФ № 814 — правила хранения, ношения и перевозки.</li>
+          <li class="flex gap-2.5"><span>§</span>Нарезное оружие — гражданам со стажем владения гладкоствольным <b>не менее 5 лет</b>.</li>
+          <li class="flex gap-2.5"><span>§</span>Патроны продаются по разрешению на соответствующий вид оружия.</li>
+          <li class="flex gap-2.5"><span>§</span>Хранение дома — в запираемом сейфе; транспортировка — в чехле, разряженным.</li>
+        </ul>
+      </div>
+      <div class="bg-pine-800 border border-white/5 rounded-3xl p-7 reveal">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="w-12 h-12 rounded-xl bg-pine-950 text-amberx font-display text-lg font-semibold flex items-center justify-center">21+</span>
+          <div class="font-display uppercase text-lg leading-tight">Возрастное<br>ограничение</div>
+        </div>
+        <p class="text-sm text-moss leading-relaxed mb-4">Охотничье гладкоствольное и нарезное оружие приобретается с 21 года, отдельные виды (ОООП, спортивное) — с 18 лет, за исключениями, установленными ФЗ № 150.</p>
+        <div class="h-px bg-white/10 my-4"></div>
+        <div class="font-display uppercase text-sm text-amberx-light mb-2">Поможем с документами</div>
+        <p class="text-sm text-moss leading-relaxed mb-5">Консультанты магазина подскажут полный список документов для вашего случая и запишут на обучение у партнёров.</p>
+        <a href="#contacts" class="btn-amber rounded-xl px-6 py-3 inline-block font-display uppercase tracking-wider text-sm">Получить консультацию</a>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ==================== О МАГАЗИНЕ ==================== -->
+<section id="about" class="bg-pine-950/60 border-y border-white/5">
+  <div class="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24 grid lg:grid-cols-2 gap-12 items-center">
+    <div class="relative reveal">
+      <img id="aboutImg" src="" alt="Охотник с собакой в осеннем лесу" class="rounded-3xl w-full h-[420px] md:h-[520px] object-cover shadow-card">
+      <div class="absolute -bottom-6 -right-4 md:right-8 bg-pine-800 border border-white/10 rounded-2xl px-6 py-4 shadow-card">
+        <div class="font-display text-2xl text-amberx-light font-semibold">с 2008 года</div>
+        <div class="text-[12px] text-moss uppercase tracking-wider">семейный магазин охоты и рыбалки</div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="text-amberx text-[12px] font-extrabold uppercase tracking-[.25em] mb-2">О магазине</div>
+      <h2 class="font-display text-3xl md:text-5xl font-semibold uppercase mb-6">«Охотник и Рыболов»</h2>
+      <p class="text-moss leading-relaxed mb-5">Мы — лицензированный оружейный магазин полного цикла: торговый зал с сейф-витринами, комната оружейника, стенд пристрелки и консультации по подбору калибра под вашу охоту. Рядом — отдел рыболовных снастей: от бюджетных спиннингов до трофейных мультипликаторов.</p>
+      <ul class="space-y-3.5 text-[15px]">
+        <li class="flex gap-3"><span class="text-amberx">✔</span> Только сертифицированное гражданское оружие российского и импортного производства</li>
+        <li class="flex gap-3"><span class="text-amberx">✔</span> Проверка каждой единицы оружейником перед выдачей</li>
+        <li class="flex gap-3"><span class="text-amberx">✔</span> Патроны основных калибров в наличии: 12/70, 12/76, 7.62×39, 7.62×54R, .308 Win, 10×28, 18×45</li>
+        <li class="flex gap-3"><span class="text-amberx">✔</span> Честные цены и гарантия производителя</li>
+      </ul>
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a href="#catalog" class="btn-amber rounded-xl px-7 py-3.5 font-display uppercase tracking-wider text-sm">Перейти в каталог</a>
+        <a href="#contacts" class="btn-ghost rounded-xl px-7 py-3.5 font-display uppercase tracking-wider text-sm text-moss">Как нас найти</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== КОНТАКТЫ / ПОДВАЛ ==================== -->
+<footer id="contacts" class="bg-pine-950">
+  <div class="max-w-7xl mx-auto px-4 md:px-6 py-16 grid md:grid-cols-2 lg:grid-cols-4 gap-10">
+    <div>
+      <div class="flex items-center gap-3 mb-5">
+        <span class="w-11 h-11 rounded-xl overflow-hidden ring-1 ring-white/15">
+          <img src="https://image.qwenlm.ai/public_source/1710ad9e-01fe-4ade-b347-ae90396c4b7b/30d782f15-56bb-47f5-b5a8-b1e7ca262b1d9731.png" alt="Охотник и Рыболов" class="w-full h-full object-cover">
+        </span>
+        <span class="font-display font-semibold uppercase text-lg leading-none">Охотник <span class="text-amberx">и</span> Рыболов</span>
+      </div>
+      <p class="text-sm text-moss leading-relaxed">Гражданское оружие, патроны, оптика и товары для рыбалки. Работаем по лицензии Росгвардии.</p>
+      <div class="mt-5 inline-flex items-center gap-2 bg-pine-800 border border-amberx/30 rounded-full px-4 py-2 text-[12px] text-amberx-light font-bold">18+ · ТОЛЬКО ПО ЛИЦЕНЗИИ</div>
+    </div>
+    <div>
+      <div class="font-display uppercase text-sm tracking-widest text-amberx-light mb-4">Разделы</div>
+      <ul class="space-y-2.5 text-sm text-moss">
+        <li><a href="#categories" class="hover:text-cream transition">Категории товаров</a></li>
+        <li><a href="#catalog" class="hover:text-cream transition">Каталог и бронирование</a></li>
+        <li><a href="#law" class="hover:text-cream transition">Закон и лицензии</a></li>
+        <li><a href="#about" class="hover:text-cream transition">О магазине</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="font-display uppercase text-sm tracking-widest text-amberx-light mb-4">Контакты</div>
+      <ul class="space-y-2.5 text-sm text-moss">
+        <li>г. Назрань, ул. Чеченская, 32/1</li>
+        <li><a href="tel:+79606600624" class="hover:text-cream transition">+7 (960) 660-06-24</a></li>
+        <li><a href="mailto:shop@ohotnik-rybolov.ru" class="hover:text-cream transition">shop@ohotnik-rybolov.ru</a></li>
+        <li>Ежедневно 9:00–18:00</li>
+      </ul>
+    </div>
+    <div>
+      <div class="font-display uppercase text-sm tracking-widest text-amberx-light mb-4">Выдача заказов</div>
+      <p class="text-sm text-moss leading-relaxed">Оружие и патроны — только самовывоз из магазина при предъявлении паспорта и лицензии.</p>
+    </div>
+  </div>
+  <div class="border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 py-6 flex flex-col md:flex-row gap-3 items-center justify-between text-[12px] text-moss/70">
+      <div>© 2008–2025 Магазин «Охотник и Рыболов». Лицензия на торговлю гражданским оружием — ЦЛРР Росгвардии.</div>
+      <div>Информация на сайте не является публичной офертой (ст. 437 ГК РФ).</div>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== КОРЗИНА (БОКОВАЯ ПАНЕЛЬ) ==================== -->
+<div id="drawerOverlay" class="fixed inset-0 z-40 bg-black/60 opacity-0 pointer-events-none"></div>
+<aside id="drawer" class="fixed top-0 right-0 z-50 h-full w-full max-w-md bg-pine-900 border-l border-white/10 shadow-card translate-x-full flex flex-col">
+  <div class="flex items-center justify-between px-6 h-[72px] border-b border-white/10 shrink-0">
+    <div class="font-display uppercase text-lg tracking-wide">Корзина <span class="text-moss text-sm normal-case font-body">· бронирование</span></div>
+    <button id="drawerClose" class="w-10 h-10 rounded-xl btn-ghost flex items-center justify-center text-moss" aria-label="Закрыть корзину">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
+    </button>
+  </div>
+
+  <div id="cartView" class="flex-1 overflow-y-auto px-6 py-5 space-y-4"></div>
+
+  <form id="formView" class="hidden flex-1 overflow-y-auto px-6 py-5 space-y-4">
+    <div class="font-display uppercase text-base text-amberx-light">Оформление брони</div>
+    <input id="fName" class="field text-sm" placeholder="ФИО покупателя *" required>
+    <input id="fPhone" class="field text-sm" placeholder="Телефон * (например, +7 900 000-00-00)" type="tel" required>
+    <div id="licWrap">
+      <input id="fLic" class="field text-sm" placeholder="Серия и номер лицензии / разрешения Росгвардии *">
+      <p class="text-[11.5px] text-moss mt-2 leading-relaxed">В корзине есть оружие или патроны: выдача производится только при предъявлении оригинала лицензии и паспорта в магазине.</p>
+    </div>
+    <select id="fStore" class="field text-sm font-semibold">
+      <option>Магазин «Охотник и Рыболов», г. Назрань, ул. Чеченская, 32/1</option>
+    </select>
+    <textarea id="fComment" class="field text-sm" rows="2" placeholder="Комментарий к заказу (необязательно)"></textarea>
+    <label class="flex items-start gap-3 text-[12.5px] text-moss leading-relaxed cursor-pointer">
+      <input id="fAgree" type="checkbox" required class="mt-0.5 w-4 h-4 accent-[#e0862e]">
+      Мне есть 18 лет, я согласен(на) на обработку персональных данных и ознакомлен(а) с правилами оборота гражданского оружия в РФ.
+    </label>
+    <div class="flex gap-3 pt-1">
+      <button type="button" id="backToCart" class="btn-ghost rounded-xl px-5 py-3.5 text-sm font-display uppercase tracking-wider text-moss">Назад</button>
+      <button type="submit" class="btn-amber flex-1 rounded-xl px-5 py-3.5 font-display uppercase tracking-wider text-sm">Отправить заявку</button>
+    </div>
+  </form>
+
+  <div id="doneView" class="hidden flex-1 overflow-y-auto px-6 py-10 text-center">
+    <div class="w-20 h-20 mx-auto rounded-full bg-amberx/15 border border-amberx/40 flex items-center justify-center text-3xl mb-6">✅</div>
+    <div class="font-display text-2xl uppercase mb-2">Заявка принята</div>
+    <div class="text-moss text-sm leading-relaxed mb-2">Номер брони: <b id="orderNum" class="text-amberx-light font-display text-lg"></b></div>
+    <p class="text-moss text-sm leading-relaxed mb-8">Менеджер свяжется с вами в течение 15 минут в рабочее время. Для получения оружия и патронов возьмите паспорт и оригинал лицензии Росгвардии.</p>
+    <button id="newOrder" class="btn-ghost rounded-xl px-7 py-3.5 font-display uppercase tracking-wider text-sm text-cream">Продолжить покупки</button>
+  </div>
+
+  <div id="cartFooter" class="border-t border-white/10 px-6 py-5 shrink-0 bg-pine-950/60">
+    <div class="flex items-center justify-between mb-4">
+      <span class="text-moss text-sm">Итого к бронированию:</span>
+      <span id="cartTotal" class="font-display text-2xl text-amberx-light font-semibold">0 ₽</span>
+    </div>
+    <button id="toCheckout" class="btn-amber w-full rounded-xl py-4 font-display uppercase tracking-wider text-sm">Оформить бронирование</button>
+    <p class="text-[11px] text-moss/80 mt-3 text-center leading-relaxed">Онлайн-оплата оружия не производится. Оплата в магазине после проверки документов.</p>
+  </div>
+</aside>
+
+<!-- ==================== КАРТОЧКА ТОВАРА (МОДАЛЬНОЕ ОКНО) ==================== -->
+<div id="modal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4">
+  <div id="modalOverlay" class="absolute inset-0 bg-black/70"></div>
+  <div class="relative bg-pine-800 border border-white/10 rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-card grid md:grid-cols-2">
+    <div class="imgwell p-6 md:p-8 flex items-center justify-center min-h-[260px]">
+      <img id="mImg" src="" alt="" class="max-h-[320px] w-full object-contain">
+    </div>
+    <div class="p-6 md:p-8">
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <div id="mCat" class="text-[11px] font-extrabold uppercase tracking-widest text-amberx"></div>
+        <button id="modalClose" class="w-9 h-9 rounded-lg btn-ghost flex items-center justify-center text-moss shrink-0" aria-label="Закрыть">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg>
+        </button>
+      </div>
+      <h3 id="mName" class="font-display text-2xl md:text-3xl uppercase leading-tight mb-3"></h3>
+      <div id="mStock" class="mb-4"></div>
+      <dl id="mSpecs" class="space-y-2 text-sm mb-5"></dl>
+      <p id="mDesc" class="text-sm text-moss leading-relaxed mb-5"></p>
+      <div id="mLicNote" class="hidden bg-pine-950/70 border border-amberx/30 rounded-xl px-4 py-3 text-[12.5px] text-amberx-light leading-relaxed mb-5"></div>
+      <div class="flex items-center justify-between gap-4">
+        <div id="mPrice" class="font-display text-3xl text-amberx-light font-semibold"></div>
+        <div id="mActions"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== УВЕДОМЛЕНИЯ ==================== -->
+<div id="toasts" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[70] space-y-2.5 w-[calc(100%-2rem)] max-w-sm"></div>
+
+<script>
+/* ====================================================================
+   БЛОК 1. ФОТКИ — отдельный объект PHOTO (все изображения магазина)
+==================================================================== */
+const SRC = 'https://image.qwenlm.ai/public_source/1710ad9e-01fe-4ade-b347-ae90396c4b7b/';
+
+const PHOTO = {
+  /* --- общие изображения сайта --- */
+  hero:  SRC + '40d782f15-56bb-47f5-b5a8-b1e7ca262b1d5694.png',
+  about: SRC + '10d782f15-56bb-47f5-b5a8-b1e7ca262b1d7351.png',
+
+  /* --- обложки категорий --- */
+  cats: {
+    smooth: SRC + '30d782f15-56bb-47f5-b5a8-b1e7ca262b1d9731.png',
+    rifled: SRC + '40d782f15-56bb-47f5-b5a8-b1e7ca262b1d3080.png',
+    ooop:   SRC + '50d782f15-56bb-47f5-b5a8-b1e7ca262b1d6532.png',
+    ammo:   SRC + '60d782f15-56bb-47f5-b5a8-b1e7ca262b1d9879.png',
+    optics: SRC + '50d782f15-56bb-47f5-b5a8-b1e7ca262b1d9191.png',
+    fish:   SRC + '70d782f15-56bb-47f5-b5a8-b1e7ca262b1d9090.png'
+  },
+
+  /* --- фотки гладкоствольного оружия --- */
+  smooth: {
+    mr27_oreh:   SRC + '30d782f15-56bb-47f5-b5a8-b1e7ca262b1d9731.png',
+    mr27_plast:  SRC + '40d782f15-56bb-47f5-b5a8-b1e7ca262b1d9536.png'
+  },
+
+  /* --- фотки нарезного оружия --- */
+  rifled: {
+    saiga_mk:    SRC + '40d782f15-56bb-47f5-b5a8-b1e7ca262b1d3080.png',
+    saiga_107:   SRC + '20d782f15-56bb-47f5-b5a8-b1e7ca262b1d7686.png',
+    benelli:     SRC + '20d782f15-56bb-47f5-b5a8-b1e7ca262b1d7387.png'
+  },
+
+  /* --- фотки травматических пистолетов (ОООП) --- */
+  ooop: {
+    t15f:        SRC + '50d782f15-56bb-47f5-b5a8-b1e7ca262b1d6532.png',
+    tq1:         SRC + '40d782f15-56bb-47f5-b5a8-b1e7ca262b1d1849.png',
+    osa_1ml:     SRC + '30d782f15-56bb-47f5-b5a8-b1e7ca262b1d2074.png',
+    osa_4m:      SRC + '40d782f15-56bb-47f5-b5a8-b1e7ca262b1d3211.png'
+  },
+
+  /* --- фотки патронов --- */
+  ammo: {
+    record_12_drob:  SRC + '60d782f15-56bb-47f5-b5a8-b1e7ca262b1d9879.png',
+    record_12_kart:  SRC + '40d782f15-56bb-47f5-b5a8-b1e7ca262b1d3936.png',
+    stopper_12:      SRC + '70d782f15-56bb-47f5-b5a8-b1e7ca262b1d8228.png',
+    bpz_39:          SRC + '40d782f15-56bb-47f5-b5a8-b1e7ca262b1d3391.png',
+    npz_54r:         SRC + '20d782f15-56bb-47f5-b5a8-b1e7ca262b1d4124.png',
+    tk_1028:         SRC + '40d782f15-56bb-47f5-b5a8-b1e7ca262b1d1245.png',
+    tk_1845:         SRC + '50d782f15-56bb-47f5-b5a8-b1e7ca262b1d2172.png'
+  },
+
+  /* --- фотки оптики --- */
+  optics: {
+    scope_39x40: SRC + '50d782f15-56bb-47f5-b5a8-b1e7ca262b1d9191.png',
+    scope_312x50:SRC + '30d782f15-56bb-47f5-b5a8-b1e7ca262b1d2973.png'
+  },
+
+  /* --- фотки рыболовных товаров --- */
+  fish: {
+    beziner_4000: SRC + '70d782f15-56bb-47f5-b5a8-b1e7ca262b1d9090.png',
+    mult_3000l:   SRC + '50d782f15-56bb-47f5-b5a8-b1e7ca262b1d9820.png'
+  }
+};
+
+/* заглушка, если фото не загрузилось */
+window.__PH = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="480" height="360"><rect width="100%" height="100%" fill="#ece7db"/><text x="50%" y="50%" font-family="sans-serif" font-size="20" fill="#938d7c" text-anchor="middle" dominant-baseline="middle">Фото скоро будет</text></svg>');
+
+/* ====================================================================
+   БЛОК 2. ДАННЫЕ — каждая категория ОТДЕЛЬНО
+   stock: 'in' = в наличии | 'few' = осталось мало | 'out' = нет в наличии
+==================================================================== */
+
+/* ---------- 2.1. ГЛАДКОСТВОЛЬНОЕ ОРУЖИЕ ---------- */
+const DATA_SMOOTH = [
+ {id:101, name:'МР-27ЕМ 12/76, орех', caliber:'12/76', price:54800, badge:'Хит', stock:'in', qty:4, img:PHOTO.smooth.mr27_oreh,
+  desc:'Классическая двустволка с вертикальным расположением стволов от завода «Байкал». Ореховая ложа, хромированные каналы стволов, надёжный эжекторный механизм. Универсальное ружьё для охоты и стенда.',
+  specs:{'Тип':'Двуствольное, вертикалка','Калибр':'12/76','Длина стволов':'710 мм','Ложа':'Орех','Производитель':'Концерн «Байкал», Россия'}},
+ {id:104, name:'МР-27ЕМ 12/76, пластик', caliber:'12/76', price:50800, stock:'out', qty:0, img:PHOTO.smooth.mr27_plast,
+  desc:'Та же надёжная вертикалка в практичной полимерной ложе: не боится дождя и перепадов температур. Отличный вариант рабочего ружья для осенних охот. Ожидаем поставку с завода.',
+  specs:{'Тип':'Двуствольное, вертикалка','Калибр':'12/76','Длина стволов':'710 мм','Ложа':'Полимер','Производитель':'Концерн «Байкал», Россия'}}
+];
+
+/* ---------- 2.2. НАРЕЗНОЕ ОРУЖИЕ ---------- */
+const DATA_RIFLED = [
+ {id:201, name:'Карабин Сайга МК 7,62×39', caliber:'7,62×39', price:56800, stock:'in', qty:3, img:PHOTO.rifled.saiga_mk,
+  desc:'Самозарядный охотничий карабин на платформе АК под промежуточный патрон. Ресурс, всепогодность и доступная цена выстрела. Для владельцев гладкоствольного оружия со стажем от 5 лет.',
+  specs:{'Тип':'Самозарядный карабин','Калибр':'7,62×39','Ёмкость':'10 патронов','Ствол':'415 мм','Производитель':'Концерн «Калашников», Россия'}},
+ {id:202, name:'Карабин Сайга МК 5,45×39', caliber:'5,45×39', price:56800, badge:'Новинка', stock:'out', qty:0, img:PHOTO.rifled.saiga_107,
+  desc:'Карабин со сбалансированной автоматикой: минимальный подброс, отличная кучность на быстрых сериях. Планки Пикатинни, телескопический приклад, современная эргономика. Лимитированная серия — следующая поставка ожидается.',
+  specs:{'Тип':'Самозарядный, баланс. автоматика','Калибр':'5,45×39','Ёмкость':'10 патронов','Производитель':'Концерн «Калашников», Россия'}},
+ {id:203, name:'Карабин Benelli Lupo .308 Win', caliber:'.308 Win', price:89000, stock:'few', qty:1, img:PHOTO.rifled.benelli,
+  desc:'Болтовой карабин премиум-класса с фирменной ствольной коробкой BE.ST и гравировкой Deluxe. Высокоточная охота на крупного зверя: кабан, лось, медведь. Последний экземпляр в зале.',
+  specs:{'Тип':'Болтовой, продольно-скользящий затвор','Калибр':'.308 Win (7,62×51)','Ложа':'Орех, гравировка','Производитель':'Benelli, Италия'}}
+];
+
+/* ---------- 2.3. ТРАВМАТИЧЕСКИЕ ПИСТОЛЕТЫ (ОООП) ---------- */
+const DATA_OOOP = [
+ {id:302, name:'Пистолет Grand Power T12 10×28', caliber:'10×28', price:78900, stock:'few', qty:2, img:PHOTO.ooop.tq1,
+  desc:'Компактный травматический пистолет под патрон 10×28: удобен для скрытого ношения, автоматика по схеме свободного затвора, эргономичная рукоять.',
+  specs:{'Тип':'ООП, травматический','Калибр':'10×28','Ёмкость':'10 патронов','Энергия':'до 91 Дж','Производитель':'Grand Power / Техкрим, Россия'}},
+ {id:303, name:'Пистолет ОСА ПБ-4-1МЛ 18×45', caliber:'18×45', price:9800, stock:'in', qty:10, img:PHOTO.ooop.osa_1ml,
+  desc:'Бесствольное оружие самообороны: четыре заряда 18×45 в кассете, лазерный целеуказатель. Максимально простое и законное средство защиты для дома и улицы.',
+  specs:{'Тип':'ООП, бесствольное','Калибр':'18×45','Зарядов':'4','ЦУ':'Лазерный','Производитель':'НИИ ПХ, Россия'}}
+];
+
+/* ---------- 2.4. ПАТРОНЫ (ОТДЕЛЬНО ПО КАЛИБРАМ) ---------- */
+const DATA_AMMO = [
+ {id:401, name:'Патроны Record 12/70, дробь №5, 32 г (25 шт)', caliber:'12/70', price:890, stock:'in', qty:120, img:PHOTO.ammo.record_12_drob,
+  desc:'Классические дробовые патроны КХЗ для охоты на утку, рябчика и голубя. Стабильный бой, ровная осыпь, латунная гильза.',
+  specs:{'Калибр':'12/70','Навеска':'32 г, дробь №5','Упаковка':'25 шт','Производитель':'КХЗ, Россия'}},
+ {id:402, name:'Патроны Record 12/70, картечь 7,15 (25 шт)', caliber:'12/70', price:940, stock:'in', qty:85, img:PHOTO.ammo.record_12_kart,
+  desc:'Картечные патроны для охоты на кабана и косулю на коротких дистанциях. Согласованная картечь 7,15 мм, надёжная закрутка.',
+  specs:{'Калибр':'12/70','Снаряд':'Картечь 7,15 мм','Упаковка':'25 шт','Производитель':'КХЗ, Россия'}},
+ {id:403, name:'Патроны Стоппер К 12/70, резиновая пуля (10 шт)', caliber:'12/70', price:1150, stock:'few', qty:8, img:PHOTO.ammo.stopper_12,
+  desc:'Патроны травматического действия для гладкоствольного оружия: резиновая пуля для самообороны и отпугивания. Продаются по разрешению на гладкоствольное оружие.',
+  specs:{'Калибр':'12/70','Снаряд':'Резиновая пуля','Упаковка':'10 шт','Производитель':'Техкрим, Россия'}},
+ {id:404, name:'Патроны БПЗ 7,62×39 HP 8,0 г (20 шт)', caliber:'7,62×39', price:600, stock:'in', qty:60, img:PHOTO.ammo.bpz_39,
+  desc:'Охотничьи патроны с полуоболочечной пулей HP: экспансивность и высокое останавливающее действие на копытных. Полимерное покрытие гильзы.',
+  specs:{'Калибр':'7,62×39','Пуля':'HP, 8,0 г','Упаковка':'20 шт','Производитель':'БПЗ, Россия'}},
+ {id:405, name:'Патроны НПЗ 7,62×54R FMJ 200 gr (20 шт)', caliber:'7,62×54R', price:2000, stock:'out', qty:0, img:PHOTO.ammo.npz_54r,
+  desc:'Оболочечная пуля томпак для нарезного оружия под русский винтовочный патрон. Отлично подходит для карабинов Вепрь, Тигр, болтовиков. Партия распродана, ждём поставку.',
+  specs:{'Калибр':'7,62×54R','Пуля':'FMJ, 200 gr','Упаковка':'20 шт','Производитель':'НПЗ / LVE, Россия'}},
+ {id:406, name:'Патроны Техкрим 10×28 Maximum, РБ (20 шт)', caliber:'10×28', price:800, stock:'in', qty:200, img:PHOTO.ammo.tk_1028,
+  desc:'Травматические патроны с резиновой пулей, дульная энергия до 91 Дж. Совместимы с T15-F, TQ1, P226T и другими пистолетами ОООП калибра 10×28.',
+  specs:{'Калибр':'10×28','Пуля':'Резиновая','Энергия':'до 91 Дж','Упаковка':'20 шт','Производитель':'Техкрим, Россия'}},
+ {id:407, name:'Патроны 45 Rubber ТК 18×45, РБ (20 шт)', caliber:'18×45', price:800, stock:'in', qty:150, img:PHOTO.ammo.tk_1845,
+  desc:'Травматические патроны для бесствольного оружия ОСА: резиновая пуля, энергия до 91 Дж. Надёжный электронный воспламенитель.',
+  specs:{'Калибр':'18×45','Пуля':'Резиновая','Упаковка':'20 шт','Производитель':'Техкрим, Россия'}}
+];
+
+/* ---------- 2.5. ОПТИКА И АКСЕССУАРЫ ---------- */
+const DATA_OPTICS = [
+ {id:501, name:'Прицел оптический 3-9×40, сетка Duplex', caliber:'—', price:24900, stock:'in', qty:5, img:PHOTO.optics.scope_39x40,
+  desc:'Универсальный загонно-вариативный прицел: просветлённая оптика, барабаны поправок, азотное заполнение. Подойдёт на нарезные карабины и гладкоствол с планкой.',
+  specs:{'Кратность':'3-9×','Объектив':'40 мм','Сетка':'Duplex, подсветка','Корпус':'Авиаль, азот'}},
+ {id:502, name:'Прицел оптический 3-12×50 Tactical', caliber:'—', price:46500, stock:'few', qty:1, img:PHOTO.optics.scope_312x50,
+  desc:'Прицел для точной стрельбы на средние и дальние дистанции: тактические барабаны, стеклянная сетка Mil-Dot, полное многослойное просветление.',
+  specs:{'Кратность':'3-12×','Объектив':'50 мм','Сетка':'Mil-Dot','Барабаны':'Тактические, 1/4 MOA'}}
+];
+
+/* ---------- 2.6. ТОВАРЫ ДЛЯ РЫБАЛКИ ---------- */
+const DATA_FISH = [
+ {id:601, name:'Катушка безынерционная Hunter 4000', caliber:'—', price:3450, stock:'in', qty:18, img:PHOTO.fish.beziner_4000,
+  desc:'Надёжная катушка для спиннинга и фидера: 5 подшипников, точный фрикцион, алюминиевая шпуля под плетёнку и монофил. Размер 4000 — щука, судак, карп.',
+  specs:{'Размер':'4000','Подшипники':'5+1','Фрикцион':'Передний','Шпуля':'Алюминий + запасная'}},
+ {id:602, name:'Мультипликаторная катушка Sea 3000L', caliber:'—', price:5900, stock:'out', qty:0, img:PHOTO.fish.mult_3000l,
+  desc:'Мощный мультипликатор для трофейной рыбалки и троллинга: передача 3.8:1, drag-тормоз, коррозиестойкий корпус. Сезонный хит — ждём следующую партию.',
+  specs:{'Тип':'Мультипликатор','Передаточное число':'3.8:1','Тормоз':'Drag, многоступенчатый'}}
+];
+
+/* ---------- 2.7. КАТЕГОРИИ (объединяют блоки данных) ---------- */
+const CATS = [
+  {id:'smooth', name:'Гладкоствольное',    note:'Ружья 12 и 16 калибров',       img:PHOTO.cats.smooth, items:DATA_SMOOTH},
+  {id:'rifled', name:'Нарезное',           note:'Карабины и винтовки',          img:PHOTO.cats.rifled, items:DATA_RIFLED},
+  {id:'ooop',   name:'Самооборона (ОООП)', note:'Травматические пистолеты',     img:PHOTO.cats.ooop,   items:DATA_OOOP},
+  {id:'ammo',   name:'Патроны',            note:'Дробь, картечь, пуля, РБ',     img:PHOTO.cats.ammo,   items:DATA_AMMO},
+  {id:'optics', name:'Оптика',             note:'Прицелы и кронштейны',         img:PHOTO.cats.optics, items:DATA_OPTICS},
+  {id:'fish',   name:'Рыбалка',            note:'Катушки, снасти, приманки',    img:PHOTO.cats.fish,   items:DATA_FISH}
+];
+
+/* ---------- 2.8. Сборка общего списка + категории, требующие лицензии ---------- */
+const LIC_CATS = ['smooth','rifled','ooop','ammo'];
+const PRODUCTS = [];
+CATS.forEach(c => c.items.forEach(p => PRODUCTS.push({...p, cat:c.id})));
+
+/* ====================================================================
+   БЛОК 3. СОСТОЯНИЕ И УТИЛИТЫ
+==================================================================== */
+const state = { cat:'all', q:'', sort:'pop', onlyInStock:false };
+let cart = new Map();
+try{ const saved = JSON.parse(localStorage.getItem('hf_cart')||'[]'); saved.forEach(([k,v])=>cart.set(k,v)); }catch(e){}
+
+const fmt = n => new Intl.NumberFormat('ru-RU').format(n) + ' ₽';
+const catName = id => (CATS.find(c=>c.id===id)||{}).name || '';
+const $ = s => document.querySelector(s);
+
+const STOCK_META = {
+  in:  {cls:'stock-in',  label:'В наличии'},
+  few: {cls:'stock-few', label:'Осталось мало'},
+  out: {cls:'stock-out', label:'Нет в наличии'}
+};
+const stockLabel = p => {
+  const m = STOCK_META[p.stock];
+  if(p.stock==='out') return `✕ ${m.label}`;
+  if(p.stock==='few') return `${m.label} — ${p.qty} шт в зале`;
+  return `${m.label} — ${p.qty} шт`;
+};
+
+/* ====================================================================
+   БЛОК 4. ПОДТВЕРЖДЕНИЕ ВОЗРАСТА
+==================================================================== */
+(function(){
+  let ok = false; try{ ok = localStorage.getItem('hf_age')==='1'; }catch(e){}
+  if(ok){ $('#ageGate').classList.add('hidden'); }
+  $('#ageYes').onclick = () => { try{localStorage.setItem('hf_age','1');}catch(e){} $('#ageGate').classList.add('hidden'); };
+  $('#ageNo').onclick  = () => { $('#ageGate').classList.add('hidden'); $('#ageDeny').classList.remove('hidden'); };
+})();
+
+$('#heroImg').src  = PHOTO.hero;
+$('#aboutImg').src = PHOTO.about;
+
+/* ====================================================================
+   БЛОК 5. КАТЕГОРИИ
+==================================================================== */
+(function renderCats(){
+  $('#catGrid').innerHTML = CATS.map(c=>`
+    <button data-cat="${c.id}" class="catcard group relative rounded-2xl overflow-hidden border border-white/10 hover:border-amberx/50 transition text-left h-44 md:h-52 reveal">
+      <img src="${c.img}" onerror="this.onerror=null;this.src=window.__PH" alt="${c.name}" class="catimg absolute inset-0 w-full h-full object-cover">
+      <div class="absolute inset-0 bg-gradient-to-t from-pine-950 via-pine-950/45 to-transparent"></div>
+      <div class="absolute bottom-0 left-0 right-0 p-4">
+        <div class="font-display uppercase font-semibold text-[15px] md:text-base leading-tight">${c.name}</div>
+        <div class="text-[11px] text-moss mt-1">${c.items.length} тов. · ${c.note}</div>
+        <div class="mt-2 text-[11px] font-extrabold uppercase tracking-widest text-amberx-light opacity-0 group-hover:opacity-100 transition">Смотреть →</div>
+      </div>
+    </button>`).join('');
+  document.querySelectorAll('.catcard').forEach(b=>b.onclick=()=>{
+    state.cat = b.dataset.cat; syncChips(); renderGrid();
+    document.getElementById('catalog').scrollIntoView({behavior:'smooth'});
+  });
+})();
+
+/* ====================================================================
+   БЛОК 6. ЧИПЫ ФИЛЬТРОВ
+==================================================================== */
+function renderChips(){
+  const all = [{id:'all',name:'Все товары',img:PHOTO.hero},...CATS.map(c=>({id:c.id,name:c.name,img:c.img}))];
+  $('#chipRow').innerHTML = all.map(c=>`
+    <button data-chip="${c.id}" class="chip flex items-center gap-2.5 rounded-full border border-white/12 bg-pine-800 pl-1.5 pr-4 py-1.5">
+      <span class="w-8 h-8 rounded-full overflow-hidden ring-1 ring-white/15 shrink-0">
+        <img src="${c.img}" onerror="this.onerror=null;this.src=window.__PH" alt="" class="w-full h-full object-cover">
+      </span>
+      <span class="chip-name text-[13px] font-bold text-cream">${c.name}</span>
+    </button>`).join('');
+  document.querySelectorAll('[data-chip]').forEach(b=>b.onclick=()=>{ state.cat=b.dataset.chip; syncChips(); renderGrid(); });
+  syncChips();
+}
+function syncChips(){
+  document.querySelectorAll('[data-chip]').forEach(b=>b.classList.toggle('active', b.dataset.chip===state.cat));
+}
+
+/* ====================================================================
+   БЛОК 7. КАТАЛОГ (фильтр + сортировка + наличие)
+==================================================================== */
+function filtered(){
+  let list = PRODUCTS.filter(p => (state.cat==='all'||p.cat===state.cat));
+  if(state.onlyInStock) list = list.filter(p => p.stock!=='out');
+  if(state.q){
+    const q = state.q.toLowerCase().trim();
+    list = list.filter(p => (p.name+' '+p.caliber+' '+p.desc+' '+catName(p.cat)).toLowerCase().includes(q));
+  }
+  const rank = s => s==='in'?0 : s==='few'?1 : 2;
+  if(state.sort==='asc')   list = [...list].sort((a,b)=>a.price-b.price);
+  if(state.sort==='desc')  list = [...list].sort((a,b)=>b.price-a.price);
+  if(state.sort==='name')  list = [...list].sort((a,b)=>a.name.localeCompare(b.name,'ru'));
+  if(state.sort==='stock') list = [...list].sort((a,b)=>rank(a.stock)-rank(b.stock));
+  return list;
+}
+function renderGrid(){
+  const list = filtered();
+  $('#emptyState').classList.toggle('hidden', list.length>0);
+  $('#productGrid').innerHTML = list.map(p=>{
+    const lic = LIC_CATS.includes(p.cat);
+    const m = STOCK_META[p.stock];
+    const isOut = p.stock==='out';
+    return `
+    <article class="pcard ${isOut?'is-out':''} reveal in bg-pine-800 border border-white/8 rounded-2xl overflow-hidden flex flex-col shadow-card">
+      <div class="relative imgwell aspect-[4/3] flex items-center justify-center p-5 overflow-hidden">
+        <img src="${p.img}" onerror="this.onerror=null;this.src=window.__PH" alt="${p.name}" loading="lazy" class="pimg max-h-full max-w-full object-contain">
+        ${p.badge?`<span class="absolute top-3 left-3 bg-amberx text-pine-950 text-[10.5px] font-extrabold uppercase tracking-wider rounded-full px-3 py-1">${p.badge}</span>`:''}
+        ${lic?`<span class="absolute top-3 right-3 bg-pine-950/85 text-amberx-light border border-amberx/40 text-[10px] font-extrabold uppercase tracking-wider rounded-full px-2.5 py-1">Лицензия</span>`:''}
+        ${isOut?`<span class="absolute inset-x-0 bottom-0 bg-pine-950/80 text-center text-[11px] font-extrabold uppercase tracking-widest text-[#e5695e] py-1.5">Нет в наличии · под заказ</span>`:''}
+      </div>
+      <div class="p-5 flex flex-col grow">
+        <div class="text-[10.5px] font-extrabold uppercase tracking-widest text-amberx mb-1.5">${catName(p.cat)}</div>
+        <h3 class="font-display text-[17px] uppercase leading-snug mb-1">${p.name}</h3>
+        <div class="text-[12.5px] text-moss mb-3">Калибр: <b class="text-cream">${p.caliber}</b></div>
+        <div class="stock ${m.cls} mb-4">${stockLabel(p)}</div>
+        <div class="mt-auto flex items-end justify-between gap-3">
+          <div>
+            ${p.old?`<div class="text-[12px] text-moss line-through">${fmt(p.old)}</div>`:''}
+            <div class="font-display text-xl text-amberx-light font-semibold leading-none">${fmt(p.price)}</div>
+          </div>
+          <div class="flex gap-2">
+            <button data-info="${p.id}" class="btn-ghost w-10 h-10 rounded-xl flex items-center justify-center text-moss shrink-0" title="Подробнее" aria-label="Подробнее">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.6v.2"/></svg>
+            </button>
+            ${isOut
+              ? `<button data-notify="${p.id}" class="btn-notify rounded-xl px-3 h-10 text-[11.5px] font-display uppercase tracking-wide shrink-0">Сообщить</button>`
+              : `<button data-add="${p.id}" class="btn-amber rounded-xl px-4 h-10 text-[12px] font-display uppercase tracking-wider shrink-0">В корзину</button>`}
+          </div>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+  document.querySelectorAll('[data-add]').forEach(b=>b.onclick=()=>addToCart(+b.dataset.add));
+  document.querySelectorAll('[data-notify]').forEach(b=>b.onclick=()=>{
+    const p = PRODUCTS.find(x=>x.id===+b.dataset.notify);
+    toast(`Записали: сообщим вам, когда «${p.name}» поступит в магазин`);
+  });
+  document.querySelectorAll('[data-info]').forEach(b=>b.onclick=()=>openModal(+b.dataset.info));
+}
+$('#searchInput').addEventListener('input', e=>{ state.q=e.target.value; renderGrid(); });
+$('#sortSelect').addEventListener('change', e=>{ state.sort=e.target.value; renderGrid(); });
+$('#resetFilters').onclick = ()=>{ state.cat='all'; state.q=''; state.onlyInStock=false; $('#searchInput').value=''; state.sort='pop'; $('#sortSelect').value='pop'; syncStockToggle(); syncChips(); renderGrid(); };
+
+function syncStockToggle(){
+  const box = $('#stockToggleBox');
+  $('#stockToggle').classList.toggle('border-amberx/60', state.onlyInStock);
+  box.innerHTML = state.onlyInStock ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f2a95c" stroke-width="3.5" stroke-linecap="round"><path d="M4 12l6 6L20 6"/></svg>' : '';
+  box.style.borderColor = state.onlyInStock ? '#e0862e' : '';
+}
+$('#stockToggle').onclick = ()=>{ state.onlyInStock=!state.onlyInStock; syncStockToggle(); renderGrid(); };
+
+/* ====================================================================
+   БЛОК 8. КАРТОЧКА ТОВАРА (МОДАЛЬНОЕ ОКНО)
+==================================================================== */
+let modalId = null;
+function openModal(id){
+  const p = PRODUCTS.find(x=>x.id===id); if(!p) return;
+  modalId = id;
+  $('#mImg').src = p.img; $('#mImg').onerror = function(){this.onerror=null;this.src=window.__PH;};
+  $('#mImg').alt = p.name;
+  $('#mCat').textContent = catName(p.cat);
+  $('#mName').textContent = p.name;
+  $('#mDesc').textContent = p.desc;
+  $('#mPrice').textContent = fmt(p.price);
+  const m = STOCK_META[p.stock];
+  $('#mStock').innerHTML = `<span class="stock ${m.cls}">${stockLabel(p)}</span>`;
+  $('#mSpecs').innerHTML = Object.entries(p.specs).map(([k,v])=>`
+    <div class="flex justify-between gap-4 border-b border-white/8 pb-2">
+      <dt class="text-moss">${k}</dt><dd class="text-right font-semibold">${v}</dd>
+    </div>`).join('');
+  const lic = LIC_CATS.includes(p.cat);
+  $('#mLicNote').classList.toggle('hidden', !lic);
+  if(lic) $('#mLicNote').innerHTML = '⚖️ Продажа осуществляется только в магазине при предъявлении <b>паспорта и лицензии (разрешения) Росгвардии</b> на соответствующий вид оружия (ФЗ № 150-ФЗ). Онлайн-оплата не производится.';
+  $('#mActions').innerHTML = p.stock==='out'
+    ? `<button id="mNotify" class="btn-notify rounded-xl px-6 py-3.5 font-display uppercase tracking-wider text-sm">Сообщить о поступлении</button>`
+    : `<button id="mAdd" class="btn-amber rounded-xl px-7 py-3.5 font-display uppercase tracking-wider text-sm">В корзину</button>`;
+  if(p.stock==='out'){ $('#mNotify').onclick = ()=>{ toast(`Записали: сообщим вам, когда «${p.name}» поступит в магазин`); closeModal(); }; }
+  else { $('#mAdd').onclick = ()=>{ addToCart(modalId); closeModal(); }; }
+  const mdl = $('#modal'); mdl.classList.remove('hidden'); mdl.classList.add('flex');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){ const mdl=$('#modal'); mdl.classList.add('hidden'); mdl.classList.remove('flex'); document.body.style.overflow=''; }
+$('#modalClose').onclick = closeModal;
+$('#modalOverlay').onclick = closeModal;
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeModal(); closeDrawer(); } });
+
+/* ====================================================================
+   БЛОК 9. КОРЗИНА БРОНИРОВАНИЯ
+==================================================================== */
+function saveCart(){ try{ localStorage.setItem('hf_cart', JSON.stringify([...cart])); }catch(e){} }
+function cartQty(){ let n=0; cart.forEach(v=>n+=v); return n; }
+function cartSum(){ let s=0; cart.forEach((v,k)=>{ const p=PRODUCTS.find(x=>x.id===k); if(p) s+=p.price*v; }); return s; }
+function addToCart(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  if(p.stock==='out'){ toast('Товара нет в наличии — оформите уведомление о поступлении'); return; }
+  const max = p.stock==='few' ? p.qty : 99;
+  const cur = cart.get(id)||0;
+  if(cur+1 > max){ toast(`Больше ${max} шт забронировать нельзя — остаток в зале`); return; }
+  cart.set(id,cur+1); saveCart(); syncCart();
+  toast(`«${p.name}» — добавлено в корзину бронирования`);
+}
+function syncCart(){
+  $('#cartCount').textContent = cartQty();
+  $('#cartTotal').textContent = fmt(cartSum());
+  const box = $('#cartView');
+  if(cart.size===0){
+    box.innerHTML = `<div class="text-center py-16">
+      <div class="text-5xl mb-4">🧺</div>
+      <div class="font-display uppercase text-lg mb-2">Корзина пуста</div>
+      <p class="text-moss text-sm leading-relaxed">Добавьте товары из наличия в каталоге — оружие бронируется до визита в магазин, снасти и оптика доступны с доставкой.</p>
+      <button onclick="document.getElementById('drawerClose').click();document.getElementById('catalog').scrollIntoView({behavior:'smooth'})" class="btn-ghost mt-6 rounded-xl px-6 py-3 text-sm font-display uppercase tracking-wider">В каталог</button>
+    </div>`;
+    $('#cartFooter').classList.add('hidden');
+  } else {
+    $('#cartFooter').classList.remove('hidden');
+    box.innerHTML = [...cart].map(([id,qty])=>{
+      const p = PRODUCTS.find(x=>x.id===id); if(!p) return '';
+      const lic = LIC_CATS.includes(p.cat);
+      return `<div class="flex gap-3.5 bg-pine-800 border border-white/8 rounded-2xl p-3">
+        <div class="imgwell w-20 h-20 rounded-xl overflow-hidden shrink-0 flex items-center justify-center p-1.5">
+          <img src="${p.img}" onerror="this.onerror=null;this.src=window.__PH" alt="" class="max-h-full max-w-full object-contain">
+        </div>
+        <div class="grow min-w-0">
+          <div class="text-[13.5px] font-bold leading-snug truncate">${p.name}</div>
+          <div class="text-[11px] text-moss mt-0.5">${catName(p.cat)}${lic?' · <span class="text-amberx-light font-bold">нужна лицензия</span>':''}</div>
+          <div class="stock ${STOCK_META[p.stock].cls} mt-1.5" style="font-size:10.5px">${p.stock==='few' ? 'Мало · '+p.qty+' шт' : 'В наличии'}</div>
+          <div class="flex items-center justify-between mt-2">
+            <div class="flex items-center gap-1 bg-pine-950 rounded-lg p-1">
+              <button data-dec="${id}" class="w-7 h-7 rounded-md bg-pine-700 hover:bg-pine-600 transition font-bold">−</button>
+              <span class="w-8 text-center text-sm font-bold">${qty}</span>
+              <button data-inc="${id}" class="w-7 h-7 rounded-md bg-pine-700 hover:bg-pine-600 transition font-bold">+</button>
+            </div>
+            <div class="font-display text-amberx-light font-semibold">${fmt(p.price*qty)}</div>
+          </div>
+        </div>
+        <button data-del="${id}" class="self-start text-moss hover:text-red-400 transition p-1" title="Убрать" aria-label="Убрать">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M7 7l1 13h8l1-13"/></svg>
+        </button>
+      </div>`;
+    }).join('');
+    box.querySelectorAll('[data-inc]').forEach(b=>b.onclick=()=>addToCart(+b.dataset.inc));
+    box.querySelectorAll('[data-dec]').forEach(b=>b.onclick=()=>{ const k=+b.dataset.dec; const v=cart.get(k)-1; v<=0?cart.delete(k):cart.set(k,v); saveCart(); syncCart(); });
+    box.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{ cart.delete(+b.dataset.del); saveCart(); syncCart(); });
+  }
+}
+function openDrawer(){ $('#drawer').classList.remove('translate-x-full'); $('#drawerOverlay').classList.remove('opacity-0','pointer-events-none'); document.body.style.overflow='hidden'; showView('cart'); }
+function closeDrawer(){ $('#drawer').classList.add('translate-x-full'); $('#drawerOverlay').classList.add('opacity-0','pointer-events-none'); document.body.style.overflow=''; }
+function showView(v){
+  $('#cartView').classList.toggle('hidden', v!=='cart');
+  $('#formView').classList.toggle('hidden', v!=='form');
+  $('#doneView').classList.toggle('hidden', v!=='done');
+  $('#cartFooter').classList.toggle('hidden', v!=='cart' || cart.size===0);
+  if(v==='form'){
+    const hasLic = [...cart.keys()].some(id=>LIC_CATS.includes(PRODUCTS.find(p=>p.id===id)?.cat));
+    $('#licWrap').classList.toggle('hidden', !hasLic);
+    $('#fLic').required = hasLic;
+  }
+}
+$('#cartBtn').onclick = openDrawer;
+$('#drawerClose').onclick = closeDrawer;
+$('#drawerOverlay').onclick = closeDrawer;
+$('#toCheckout').onclick = ()=>showView('form');
+$('#backToCart').onclick = ()=>showView('cart');
+$('#newOrder').onclick = ()=>{ showView('cart'); closeDrawer(); };
+$('#formView').addEventListener('submit', e=>{
+  e.preventDefault();
+  $('#orderNum').textContent = 'ОР-' + String(Date.now()).slice(-6);
+  cart.clear(); saveCart(); syncCart();
+  e.target.reset();
+  showView('done');
+  toast('Заявка на бронирование отправлена менеджеру');
+});
+
+/* ====================================================================
+   БЛОК 10. УВЕДОМЛЕНИЯ (TOAST), АНИМАЦИИ, ИНИЦИАЛИЗАЦИЯ
+==================================================================== */
+function toast(msg){
+  const el = document.createElement('div');
+  el.className = 'toast bg-pine-800 border border-amberx/40 text-cream text-[13px] font-semibold rounded-xl px-5 py-3.5 shadow-card flex items-center gap-3';
+  el.innerHTML = `<span class="w-2 h-2 rounded-full bg-amberx shrink-0"></span><span>${msg}</span>`;
+  $('#toasts').appendChild(el);
+  setTimeout(()=>{ el.style.transition='opacity .4s, transform .4s'; el.style.opacity='0'; el.style.transform='translateY(8px)'; setTimeout(()=>el.remove(),420); }, 2800);
+}
+
+const io = new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } }),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+window.addEventListener('scroll', ()=>{ $('#hdr').classList.toggle('shadow-card', window.scrollY>10); }, {passive:true});
+
+renderChips();
+renderGrid();
+syncStockToggle();
+syncCart();
+</script>
+</body>
+</html>
